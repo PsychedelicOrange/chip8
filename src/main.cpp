@@ -8,7 +8,7 @@
 
 int main(int argc, char** argv)
 {
-    std::vector<uint8_t> program = util::read_byte_array_from_file("/home/parth/CLionProjects/chip8/ibmlogo.ch8");
+    std::vector<uint8_t> program = util::read_byte_array_from_file("/home/parth/CLionProjects/chip8/ibm.ch8");
     chip8::Emulator emulator;
     emulator.load_program_to_memory(program);
     for (int i = 0; i < program.size()/2; i ++)
