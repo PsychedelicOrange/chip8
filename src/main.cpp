@@ -6,8 +6,6 @@
 #include "System.h"
 #include "Util.h"
 
-
-
 int main(int argc, char** argv)
 {
     std::vector<uint8_t> program = util::read_byte_array_from_file("/home/parth/CLionProjects/chip8/maze.ch8");
@@ -22,6 +20,7 @@ int main(int argc, char** argv)
         for (int cycle = 0; cycle < timer_ticks_per_frame; cycle++)
         {
             emulator.timer_tick();
+            emulator.run();
         }
         for (int cycle = 0; cycle < cycles_per_frame - timer_ticks_per_frame; cycle++)
         {
