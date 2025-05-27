@@ -84,11 +84,11 @@ namespace chip8
             for (int i = 0; i < N; i++)
             {
                 const uint8_t row = sys.memory[sys.index_register+i];
-                if (y_coord + i > 64) break;
+                if (y_coord + i >= 32) continue;
                 for (uint8_t x = 0; x < 8; x++)
                 {
-                    if (x_coord + x > 64) break;
-                    if (row & (0x1 << 7-x) != 0) // get x'th bit
+                    if (x_coord + x >= 64) break;
+                    if ((row & (0x1 << 7-x)) != 0) // get x'th bit
                     {
                         if(const int value = display.buffer[y_coord+i][x_coord + x]; value != 0xFF) //invert and set VF register
                         {
@@ -132,7 +132,7 @@ namespace chip8
                 sys.index_register = instruction.NNN();
                 break;
             case 0xD:
-                DXYN(instruction.X(), instruction.Y(), instruction.Y());
+                DXYN(instruction.X(), instruction.Y(), instruction.N());
                 break;
             default:
                 break;

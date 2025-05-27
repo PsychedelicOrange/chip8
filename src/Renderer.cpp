@@ -51,18 +51,19 @@ void init_glad()
 
 unsigned int setup_screen_quad(void)
 {
-    // Vertex data for the rectangle (two triangles forming a quad)
+    // Vertex data for the rectangle (two triangles forming a quad) ( flipping the UV because of buffer is Y flipped)
     // clang-format off
-	float vertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+    float vertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
         // positions   // texCoords
-        -1.0f,  1.0f,  0.0f, 1.0f,
-        -1.0f, -1.0f,  0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
+        -1.0f,  1.0f,  0.0f, 0.0f,
+        -1.0f, -1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 1.0f,
 
-        -1.0f,  1.0f,  0.0f, 1.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f, 1.0f
+        -1.0f,  1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 1.0f,
+         1.0f,  1.0f,  1.0f, 0.0f
     };
+
     // clang-format on
     unsigned int VAO, VBO;
     glGenVertexArrays(1, &VAO);
@@ -137,7 +138,7 @@ unsigned int create_texture(const uint8_t* data,unsigned int shader)
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    //glPixelStorei(GL_UNPACK_ALIGNMENT, 8);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 64, 32, 0, GL_RED, GL_UNSIGNED_BYTE, data);
 
     return tex;
@@ -159,6 +160,7 @@ Renderer::Renderer(const uint8_t* screen_data)
 
 void Renderer::updateTexture()
 {
+    glDeleteTextures(1,&texture);
     texture = create_texture(screen_data,shader);
 }
 void Renderer::render() const
