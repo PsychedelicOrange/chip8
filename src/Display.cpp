@@ -7,31 +7,33 @@
 namespace chip8 {
     void Display::clear()
     {
-        for (int i = 0; i < 32; i++)
+        dirty = true;
+        for (auto & i : buffer)
         {
             for (int j = 0; j < 64; j++)
             {
-                buffer[i][j] = 0;
+                i[j] = 0;
             }
         }
     }
 
     void Display::checkerBoard()
     {
+        dirty = true;
         bool val = true;
-        for (int i = 0; i < 32; i++)
+        for (auto & i : buffer)
         {
             val = !val;
             for (int j = 0; j < 64; j++)
             {
             val = !val;
-                buffer[i][j] = val? 0: 0xFF;
+                i[j] = val? 0: 0xFF;
             }
         }
     }
 
     Display::Display()
     {
-        checkerBoard();
+        clear();
     }
 } // chip8

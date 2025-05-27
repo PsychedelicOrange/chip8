@@ -12,9 +12,8 @@ namespace chip8
     {
     public:
         uint8_t buffer[32][64];
-        void init();
+        bool dirty;
         void clear();
-        void draw();
         void checkerBoard();
         Display();
     };

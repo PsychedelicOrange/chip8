@@ -12,6 +12,7 @@ namespace util {
 
     std::string read_string_from_file(char* filePath);
     std::vector<uint8_t> read_byte_array_from_file(char* filePath);
+    uint8_t get_random_byte();
 
 } // util
 

@@ -143,6 +143,14 @@ unsigned int create_texture(const uint8_t* data,unsigned int shader)
 
     return tex;
 }
+int Renderer::getRefreshRate() const
+{
+    return glfwGetVideoMode(glfwGetPrimaryMonitor())->refreshRate;
+}
+int Renderer::shouldWindowClose() const
+{
+    return glfwWindowShouldClose(window);
+}
 
 Renderer::Renderer(const uint8_t* screen_data)
 {
@@ -150,6 +158,7 @@ Renderer::Renderer(const uint8_t* screen_data)
     init_glfw(4,1); // last supported on MacOS
     window = static_cast<GLFWwindow*>(create_glfw_window(800,400,"chip8emu", nullptr));
     init_glad();
+    glfwSwapInterval(1); // enable vsync for our emulation speed to work properly
 
     vao = setup_screen_quad();
     shader = create_shader("/home/parth/CLionProjects/chip8/src/screen.vert","/home/parth/CLionProjects/chip8/src/screen.frag");
@@ -165,8 +174,6 @@ void Renderer::updateTexture()
 }
 void Renderer::render() const
 {
-    while (!glfwWindowShouldClose(window))
-    {
         glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.5,0.5,0.5,1);
 
@@ -178,7 +185,5 @@ void Renderer::render() const
 
         glfwSwapBuffers(window);
         glfwPollEvents();
-    }
-    glfwTerminate();
 }
 

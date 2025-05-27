@@ -16,7 +16,8 @@ add_executable(chip8 src/main.cpp
         src/Renderer.h
         src/glad.c
         src/Util.cpp
-        src/Util.h)
+        src/Util.h
+        src/Instruction.h)
 
 target_link_libraries( chip8
         PRIVATE

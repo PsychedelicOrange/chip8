@@ -14,7 +14,10 @@ class Renderer {
     unsigned int vao;
     GLFWwindow* window;
 public:
-    Renderer(const uint8_t* screen_data);
+    int getRefreshRate() const;
+    [[nodiscard]] int shouldWindowClose() const;
+
+    explicit Renderer(const uint8_t* screen_data);
     void updateTexture();
     void render() const;
 };
