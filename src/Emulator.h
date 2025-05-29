@@ -17,18 +17,20 @@ namespace chip8
     class Emulator
     {
         System sys{};
-        Input input{};
         bool shift_op_super_chip_behaviour = true;
         bool jump_offset_super_chip_behaviour = false;
-        bool use_temp_index_super_chip_behaviour = true;
+        bool use_temp_index_super_chip_behaviour = false;
 
     public :
+        Input input{};
         Display display{};
         Emulator() = default;
 
-        Emulator(bool shift_op_super_chip_behaviour, bool jump_offset_super_chip_behaviour) :
+        Emulator(bool shift_op_super_chip_behaviour, bool jump_offset_super_chip_behaviour,
+                 bool use_temp_index_super_chip_behaviour) :
             shift_op_super_chip_behaviour(shift_op_super_chip_behaviour),
-            jump_offset_super_chip_behaviour(jump_offset_super_chip_behaviour)
+            jump_offset_super_chip_behaviour(jump_offset_super_chip_behaviour),
+            use_temp_index_super_chip_behaviour(use_temp_index_super_chip_behaviour)
         {
         };
 

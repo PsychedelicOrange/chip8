@@ -12,8 +12,8 @@ class Renderer {
     unsigned int shader;
     unsigned int texture;
     unsigned int vao;
-    GLFWwindow* window;
 public:
+    GLFWwindow* window;
     int getRefreshRate() const;
     [[nodiscard]] int shouldWindowClose() const;
 

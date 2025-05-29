@@ -23,7 +23,7 @@ namespace util {
         return st.str();
     }
 
-    std::vector<uint8_t> read_byte_array_from_file(char* filePath)
+    std::vector<uint8_t> read_byte_array_from_file(const char* filePath)
     {
         std::ifstream file;
         file.open(filePath, std::ios::in | std::ios::binary);

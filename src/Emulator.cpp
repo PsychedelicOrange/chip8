@@ -122,7 +122,7 @@ namespace chip8 {
             switch (instruction.N())
             {
             case 0:
-                sys.registers[instruction.Y()] = sys.registers[instruction.X()];
+                sys.registers[instruction.X()] = sys.registers[instruction.Y()];
                 break;
             case 1:
                 sys.registers[instruction.X()] = sys.registers[instruction.X()] | sys.registers[instruction.Y()];
@@ -139,7 +139,7 @@ namespace chip8 {
                 sys.registers[instruction.X()] = sys.registers[instruction.X()] + sys.registers[instruction.Y()];
                 break;
             case 5:
-                if (sys.registers[instruction.X()] > sys.registers[instruction.Y()]) sys.registers[0xf] = 1;
+                if (sys.registers[instruction.X()] >= sys.registers[instruction.Y()]) sys.registers[0xf] = 1;
                 else sys.registers[0xf] = 0;
                 sys.registers[instruction.X()] = sys.registers[instruction.X()] - sys.registers[instruction.Y()];
                 break;
@@ -156,9 +156,9 @@ namespace chip8 {
                 }
                 break;
             case 7:
-                if (sys.registers[instruction.Y()] > sys.registers[instruction.X()]) sys.registers[0xf] = 1;
+                if (sys.registers[instruction.Y()] >= sys.registers[instruction.X()]) sys.registers[0xf] = 1;
                 else sys.registers[0xf] = 0;
-                sys.registers[instruction.X()] = sys.registers[instruction.Y()] + sys.registers[instruction.X()];
+                sys.registers[instruction.X()] = sys.registers[instruction.Y()] - sys.registers[instruction.X()];
                 break;
             case 0xE:
                 if (shift_op_super_chip_behaviour)
@@ -241,21 +241,29 @@ namespace chip8 {
                 break;
             case 0x33:
                 {
-                    const auto x = static_cast<uint8_t>(instruction.X());
+                    const uint8_t x = sys.registers[instruction.X()];
                     sys.memory[sys.index_register] = x / 100;
-                    sys.memory[sys.index_register + 1] = (x % 100) / 10;
-                    sys.memory[sys.index_register + 1] = x % 10;
+                    sys.memory[sys.index_register + 1] = (x / 10) % 10;
+                    sys.memory[sys.index_register + 2] = (x % 10);
                 }
                 break;
-            case 0x55:
-                std::copy_n(sys.registers.begin(), sys.registers.size(), sys.memory + sys.index_register);
-                if (!use_temp_index_super_chip_behaviour)
+        case 0x55:
+            {
+                for (int i = 0; i <= instruction.X();i++)
+                {
+                    sys.memory[sys.index_register + i] = sys.registers[i];
+                }
+                if (use_temp_index_super_chip_behaviour)
                 {
                     sys.index_register += sys.registers.size();
                 }
+            }
                 break;
             case 0x65:
-                std::copy_n(sys.memory + sys.index_register, sys.registers.size(), sys.registers.begin());
+                for (int i = 0; i <= instruction.X();i++)
+                {
+                    sys.registers[i] = sys.memory[sys.index_register + i];
+                }
                 if (!use_temp_index_super_chip_behaviour)
                 {
                     sys.index_register += sys.registers.size();

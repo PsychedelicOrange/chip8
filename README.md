@@ -1,5 +1,8 @@
 # chip8 emulator
-written to brush up C++(17) skills
+[WIP] writing to brush up C++(17) skills
+
+IBM test rom to test display and a few other instructions
+![IBM.png](IBM.png)
 
 Reference :
 - https://tobiasvl.github.io/blog/write-a-chip-8-emulator/
