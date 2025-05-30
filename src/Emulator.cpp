@@ -15,18 +15,18 @@ namespace chip8
 {
     void Emulator::run()
     {
-        if (wait_for > 0)
+        if (wait_for.has_value())
         {
-            for (int i = 0; i < input.keys.size(); i++)
+            for (int i = 0; i < KEY_COUNT; i++)
             {
-                if (input.isKeyDown(i))
+                if (key_pressed[i])
                 {
                     signal_key_down(i);
                     break;
                 }
             }
         }
-        if (wait_for < 0)
+        if (!wait_for)
         {
             const Instruction instruction(fetch());
             execute(instruction);
@@ -35,8 +35,8 @@ namespace chip8
 
     void Emulator::signal_key_down(uint8_t key)
     {
-        sys.registers.at(wait_for) = key;
-        wait_for = -1;
+        sys.registers.at(wait_for.value()) = key;
+        wait_for.reset();
     }
 
     bool Emulator::shouldUpdateDisplay()
@@ -68,7 +68,7 @@ namespace chip8
 
     std::array<bool, 16>& Emulator::getInputData()
     {
-        return input.keys;
+        return key_pressed;
     }
 
     void Emulator::load_program_to_memory(std::vector<uint8_t> program)
@@ -79,16 +79,16 @@ namespace chip8
 
     void Emulator::DXYN(uint16_t X, uint16_t Y, uint16_t N)
     {
-        const uint8_t x_coord = sys.registers.at(X) % 64;
-        const uint8_t y_coord = sys.registers.at(Y) % 32;
+        const uint8_t x_coord = sys.registers.at(X) % DISPLAY_WIDTH;
+        const uint8_t y_coord = sys.registers.at(Y) % DISPLAY_HEIGHT;
         sys.registers.at(0xf) = 0;
         for (int i = 0; i < N; i++)
         {
-            if (y_coord + i >= 32) continue;
+            if (y_coord + i >= DISPLAY_HEIGHT) continue;
             const uint8_t row = sys.memory.at(sys.index_register + i);
             for (uint8_t x = 0; x < 8; x++)
             {
-                if (x_coord + x >= 64) break;
+                if (x_coord + x >= DISPLAY_WIDTH) break;
                 if ((row & (0x1 << 7 - x)) != 0) // get x'th bit
                 {
                     if (const int value = display.buffer[y_coord + i][x_coord + x]; value != 0xFF)
@@ -250,14 +250,14 @@ namespace chip8
         case 0xE:
             if (instruction.NN() == 0x9e)
             {
-                if (input.isKeyDown(0xF & sys.registers.at(instruction.X())))
+                if (key_pressed[0xF & sys.registers.at(instruction.X())])
                 {
                     sys.program_counter += 2;
                 }
             }
             else if (instruction.NN() == 0xA1)
             {
-                if (!input.isKeyDown(0xF & sys.registers.at(instruction.X())))
+                if (!key_pressed[0xF & sys.registers.at(instruction.X())])
                 {
                     sys.program_counter += 2;
                 }
@@ -282,7 +282,7 @@ namespace chip8
                 wait_for = instruction.X();
                 break;
             case 0x29:
-                sys.index_register = 5 * (sys.registers.at(instruction.X()) & 0x0F);
+                sys.index_register = FONT_HEIGHT * (sys.registers.at(instruction.X()) & 0x0F);
                 break;
             case 0x33:
                 {

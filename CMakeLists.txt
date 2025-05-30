@@ -23,8 +23,6 @@ add_executable(chip8 src/main.cpp
         src/Emulator.h
         src/Display.cpp
         src/Display.h
-        src/Input.cpp
-        src/Input.h
         src/Renderer.cpp
         src/Renderer.h
         src/Util.cpp
@@ -33,7 +31,8 @@ add_executable(chip8 src/main.cpp
         src/Window.cpp
         src/Window.h
         src/Types.h
-        vendor/glad/build/src/gl.c)
+        vendor/glad/build/src/gl.c
+        src/Constants.h)
 
 install(TARGETS chip8 DESTINATION /usr/local/bin)
 

@@ -4,6 +4,8 @@
 
 #include "Window.h"
 
+#include "Constants.h"
+
 void init_glfw(const int gl_major, const int gl_minor)
 {
     glfwInit();
@@ -37,7 +39,7 @@ Window::Window(const int resolution_x, const int resolution_y)
     this->window = static_cast<GLFWwindow*>(create_glfw_window(resolution_x,resolution_y,"chip8emu", nullptr));
 }
 
-void Window::updateInputKeys(std::array<bool, 16>& keys) const
+void Window::updateInputKeys(std::array<bool, chip8::KEY_COUNT>& keys) const
 {
     for (const auto [glfwKey, key] : global_input::keys)
     {

@@ -13,12 +13,14 @@
 
 namespace global_input
 {
+    // clang-format off
     static const std::unordered_map<int, uint8_t> keys = {{
         {GLFW_KEY_1, 1}, {GLFW_KEY_2, 2}, {GLFW_KEY_3, 3},{GLFW_KEY_4, 0xC},
         {GLFW_KEY_Q, 4}, {GLFW_KEY_W, 5}, {GLFW_KEY_E, 6},{GLFW_KEY_R, 0xD},
         {GLFW_KEY_A, 7}, {GLFW_KEY_S, 8}, {GLFW_KEY_D, 9},{GLFW_KEY_F, 0xE},
         {GLFW_KEY_Z,0xA},{GLFW_KEY_X, 0},{GLFW_KEY_C, 0xB},{GLFW_KEY_V, 0xF}
     }};
+    // clang-format on
 
 }
 

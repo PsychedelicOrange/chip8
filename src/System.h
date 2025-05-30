@@ -10,6 +10,8 @@
 #include <stack>
 #include <vector>
 
+#include "Constants.h"
+
 namespace chip8 {
 
     // clang-format off
@@ -32,13 +34,6 @@ namespace chip8 {
         0xF0, 0x80, 0xF0, 0x80, 0x80  // F
         };
     // clang-format on
-
-    // the chip8 interpreter used to be stored at start from 0x0 to 0x1ff
-    constexpr uint16_t PROGRAM_MEMORY_OFFSET = 0x200;
-    constexpr uint16_t FONT_MEMORY_OFFSET = 0x000;
-    constexpr uint16_t MEMORY_SIZE = 4096;
-    constexpr uint16_t REGISTER_COUNT = 16;
-    constexpr int CHIP8_CPU_CLOCK_RATE = static_cast<int>(std::pow(10,6));
 
     class System {
     public:

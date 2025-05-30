@@ -6,9 +6,9 @@
 #define EMULATOR_H
 
 #include <cmath>
+#include <optional>
 
 #include "Display.h"
-#include "Input.h"
 #include "Instruction.h"
 #include "System.h"
 
@@ -17,9 +17,9 @@ namespace chip8
     class Emulator
     {
         System sys{};
-        Input input{};
+        std::array<bool,KEY_COUNT> key_pressed{0};
         Display display{};
-        int wait_for = -1;
+        std::optional<uint8_t> wait_for;
         bool shift_op_super_chip_behaviour = true;
         bool jump_offset_super_chip_behaviour = false;
         bool use_temp_index_super_chip_behaviour = false;
@@ -39,7 +39,7 @@ namespace chip8
         void load_program_to_memory(std::vector<uint8_t> program);
 
         // input
-        std::array<bool, 16>& getInputData();
+        std::array<bool, KEY_COUNT>& getInputData();
 
         // display
         [[nodiscard]] bool shouldUpdateDisplay();
