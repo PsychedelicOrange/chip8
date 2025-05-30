@@ -1,2 +1,3 @@
 *.ch8
 build/
+compile_commands.json

@@ -3,8 +3,10 @@ project(chip8)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_subdirectory(vendor/glfw)
+# generate compile_compands for clangd
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+add_subdirectory(vendor/glfw)
 
 # Path to glad directory
 set(GLAD_SOURCES_DIR "${PROJECT_SOURCE_DIR}/vendor/glad/")
