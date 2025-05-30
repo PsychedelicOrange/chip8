@@ -3,7 +3,6 @@ project(chip8)
 
 set(CMAKE_CXX_STANDARD 17)
 
-
 add_subdirectory(vendor/glfw)
 
 
@@ -34,6 +33,7 @@ add_executable(chip8 src/main.cpp
         src/Types.h
         vendor/glad/build/src/gl.c)
 
+install(TARGETS chip8 DESTINATION /usr/local/bin)
 
 # Platform-specific configuration
 if(WIN32)

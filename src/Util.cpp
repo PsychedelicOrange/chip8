@@ -27,6 +27,11 @@ namespace util {
     {
         std::ifstream file;
         file.open(filePath, std::ios::in | std::ios::binary);
+        if (!file.is_open())
+        {
+            std::cerr << "file doesn't exist!" << std::endl;
+            exit(1);
+        }
         file.seekg(0, std::ios_base::end);
         auto length = file.tellg();
         file.seekg(0, std::ios_base::beg);

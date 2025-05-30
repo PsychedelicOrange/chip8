@@ -22,6 +22,7 @@ namespace chip8
                 if (input.isKeyDown(i))
                 {
                     signal_key_down(i);
+                    break;
                 }
             }
         }
