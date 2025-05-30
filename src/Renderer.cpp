@@ -11,34 +11,10 @@
 #include "GLFW/glfw3.h"
 #include "Util.h"
 
-void init_glfw(const int gl_major, const int gl_minor)
-{
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, gl_major);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, gl_minor);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-#ifdef __APPLE__
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-#endif
-}
-void *create_glfw_window(const int SCR_WIDTH, const int SCR_HEIGHT, const char *name, void *monitor)
-{
-    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, name, static_cast<GLFWmonitor*>(monitor), nullptr);
-    if (window == nullptr)
-    {
-        std::cerr << "Unable to create glfw window";
-        glfwTerminate();
-    }
-    glfwMakeContextCurrent(window);
-    return window;
-}
 
 void init_glad()
 {
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    if (!gladLoadGL((GLADloadfunc)glfwGetProcAddress))
     {
         std::cerr << "failed to initialize glad";
     }
@@ -125,7 +101,7 @@ unsigned int create_shader(char *vertexPath, char *fragPath)
     return create_program(vertexShader, fragmentShader);
 }
 
-unsigned int create_texture(const uint8_t* data,unsigned int shader)
+unsigned int create_texture(const bitmap_t* data,unsigned int shader)
 {
     unsigned int tex;
     glGenTextures(1, &tex);
@@ -139,7 +115,7 @@ unsigned int create_texture(const uint8_t* data,unsigned int shader)
     }
 
     //glPixelStorei(GL_UNPACK_ALIGNMENT, 8);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 64, 32, 0, GL_RED, GL_UNSIGNED_BYTE, data);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 64, 32, 0, GL_RED, GL_UNSIGNED_BYTE, data->data());
 
     return tex;
 }
@@ -147,18 +123,12 @@ int Renderer::getRefreshRate() const
 {
     return glfwGetVideoMode(glfwGetPrimaryMonitor())->refreshRate;
 }
-int Renderer::shouldWindowClose() const
-{
-    return glfwWindowShouldClose(window);
-}
 
-Renderer::Renderer(const uint8_t* screen_data)
+Renderer::Renderer(const bitmap_t* const screen_data)
 {
     this->screen_data = screen_data;
-    init_glfw(4,1); // last supported on MacOS
-    window = static_cast<GLFWwindow*>(create_glfw_window(800,400,"chip8emu", nullptr));
     init_glad();
-    glfwSwapInterval(1); // enable vsync for our emulation speed to work properly
+    glfwSwapInterval(1); // enable vsync
 
     vao = setup_screen_quad();
     shader = create_shader("/home/parth/CLionProjects/chip8/src/screen.vert","/home/parth/CLionProjects/chip8/src/screen.frag");
@@ -182,8 +152,5 @@ void Renderer::render() const
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, texture);
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
 }
 

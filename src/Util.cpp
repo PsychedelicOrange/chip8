@@ -34,10 +34,6 @@ namespace util {
         std::vector<uint8_t> bytes(length);
 
         file.read(reinterpret_cast<std::istream::char_type*>(bytes.data()), length);
-        for (const auto i : bytes)
-        {
-            std::cout <<  std::hex << std::setw(4)  << std::setfill('0') << static_cast<int>(i);
-        }
 
         file.close();
         return bytes;

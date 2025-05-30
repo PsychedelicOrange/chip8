@@ -10,9 +10,9 @@ namespace chip8 {
         dirty = true;
         for (auto & i : buffer)
         {
-            for (int j = 0; j < 64; j++)
+            for (auto & j : i)
             {
-                i[j] = 0;
+                j = 0;
             }
         }
     }
@@ -24,16 +24,17 @@ namespace chip8 {
         for (auto & i : buffer)
         {
             val = !val;
-            for (int j = 0; j < 64; j++)
+            for (auto& j : i)
             {
-            val = !val;
-                i[j] = val? 0: 0xFF;
+                val = !val;
+                j = val? 0: 0xFF;
             }
         }
     }
 
     Display::Display()
     {
+        dirty = true;
         clear();
     }
 } // chip8

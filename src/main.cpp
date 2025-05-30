@@ -1,49 +1,50 @@
-#include <cmath>
-#include <iostream>
-#include <array>
-#include <unordered_map>
+#include <thread>
 
 #include "Emulator.h"
 #include "Renderer.h"
-#include "System.h"
 #include "Util.h"
+#include "Window.h"
 
-
-void fillInput(GLFWwindow* window, chip8::Input& input)
+inline void loop_frequency(double frequency_hz)
 {
-    static constexpr std::array<std::pair<int, int>,16> keys = {{
-        {GLFW_KEY_0, 0}, {GLFW_KEY_1, 1}, {GLFW_KEY_2, 2}, {GLFW_KEY_3, 3},
-        {GLFW_KEY_4, 4}, {GLFW_KEY_5, 5}, {GLFW_KEY_6, 6}, {GLFW_KEY_7, 7},
-        {GLFW_KEY_8, 8}, {GLFW_KEY_9, 9}, {GLFW_KEY_A, 0xA}, {GLFW_KEY_B, 0xB},
-        {GLFW_KEY_C, 0xC}, {GLFW_KEY_D, 0xD}, {GLFW_KEY_E, 0xE}, {GLFW_KEY_F, 0xF}
-    }};
-    for (const auto [glfwKey, key] : keys)
+    static double sleep_begin = glfwGetTime();
+    static double work_begin = glfwGetTime();
+    sleep_begin = glfwGetTime();
+    double work_time = (sleep_begin - work_begin) * 1000;
+    if(work_time < 1000.0/frequency_hz)
     {
-        input.keys[key] = glfwGetKey(window,glfwKey) == GLFW_PRESS;
+        std::this_thread::sleep_for(std::chrono::duration<double,std::milli>(1000.0/frequency_hz - work_time));
     }
+    work_begin = glfwGetTime();
 }
 
 int main(int argc, char** argv)
 {
-    std::vector<uint8_t> program = util::read_byte_array_from_file("/home/parth/CLionProjects/chip8/ibm.ch8");
+    const Window window(800,400);
+    if (argc == 1)
+    {
+        std::cerr << "Please specify rom path!";
+        return 1;
+    }
     chip8::Emulator emulator;
-    emulator.load_program_to_memory(program);
-    Renderer renderer(&emulator.display.buffer[0][0]);
-    const int refresh_rate = renderer.getRefreshRate();
-    const int cycles_per_frame =  chip8::CHIP8_CPU_CLOCK_RATE / refresh_rate;
-    constexpr int timer_frequency = 60;
-    const int timer_ticks_per_frame = timer_frequency/ refresh_rate;
-    while (!renderer.shouldWindowClose()){
+    emulator.load_program_to_memory(util::read_byte_array_from_file(argv[1]));
+    Renderer renderer(emulator.getDisplayDataRef());
+
+    while (!window.shouldWindowClose())
+    {
+        loop_frequency(60);
+        window.updateInputKeys(emulator.getInputData());
         emulator.timer_tick();
-        emulator.run();
-        if (emulator.display.dirty)
+        for (int i = 0; i < emulator.instructions_per_frame; i++)
+        {
+            emulator.run();
+        }
+        if (emulator.shouldUpdateDisplay())
         {
             renderer.updateTexture();
+            renderer.render();
         }
-        renderer.render();
-        fillInput(renderer.window, emulator.input);
-        glfwPollEvents();
+        window.swapBuffersAndPollEvents();
     }
-    glfwTerminate();
     return 0;
 }

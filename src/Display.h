@@ -4,14 +4,15 @@
 
 #ifndef DISPLAY_H
 #define DISPLAY_H
+#include <array>
 #include <cstdint>
+#include "Types.h"
 
 namespace chip8
 {
-    class Display
+    struct Display
     {
-    public:
-        uint8_t buffer[32][64];
+        bitmap_t buffer{};
         bool dirty;
         void clear();
         void checkerBoard();

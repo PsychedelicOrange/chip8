@@ -17,34 +17,43 @@ namespace chip8
     class Emulator
     {
         System sys{};
+        Input input{};
+        Display display{};
+        int wait_for = -1;
         bool shift_op_super_chip_behaviour = true;
         bool jump_offset_super_chip_behaviour = false;
         bool use_temp_index_super_chip_behaviour = false;
-
     public :
-        Input input{};
-        Display display{};
+        int instructions_per_frame = 10;
         Emulator() = default;
-
         Emulator(bool shift_op_super_chip_behaviour, bool jump_offset_super_chip_behaviour,
-                 bool use_temp_index_super_chip_behaviour) :
+                 bool use_temp_index_super_chip_behaviour,int instructions_per_frame) :
             shift_op_super_chip_behaviour(shift_op_super_chip_behaviour),
             jump_offset_super_chip_behaviour(jump_offset_super_chip_behaviour),
-            use_temp_index_super_chip_behaviour(use_temp_index_super_chip_behaviour)
+            use_temp_index_super_chip_behaviour(use_temp_index_super_chip_behaviour),
+            instructions_per_frame(instructions_per_frame)
         {
         };
 
-        void run();
-        void timer_tick();
-
+        // memory
         void load_program_to_memory(std::vector<uint8_t> program);
+
+        // input
+        std::array<bool, 16>& getInputData();
+
+        // display
+        [[nodiscard]] bool shouldUpdateDisplay();
+        bitmap_t* getDisplayDataRef();
+
+        // CPU
+        void timer_tick();
+        void run();
 
     private:
         void DXYN(uint16_t X, uint16_t Y, uint16_t N);;
-
         void execute(Instruction instruction);
-
         [[nodiscard]] uint16_t fetch();
+        void signal_key_down(uint8_t key);
     };
 } // chip8
 

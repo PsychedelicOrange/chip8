@@ -4,6 +4,7 @@
 
 #ifndef INPUT_H
 #define INPUT_H
+#include <array>
 #include <cstdint>
 #include <iostream>
 
@@ -11,10 +12,10 @@ namespace chip8 {
 
 class Input {
 public:
-    bool keys[16] = {};
-    bool isKeyDown(uint8_t key)
+    std::array<bool,16> keys;
+    [[nodiscard]] bool isKeyDown(const uint8_t key) const
     {
-        return keys[static_cast<int>(key)] ;
+        return keys[key] ;
     }
     Input()
     {
